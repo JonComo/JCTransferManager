@@ -18,6 +18,9 @@
 		8623DB5C174EA880004FA694 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8623DB5B174EA880004FA694 /* Default-568h@2x.png */; };
 		8623DB5F174EA880004FA694 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8623DB5D174EA880004FA694 /* MainStoryboard.storyboard */; };
 		8623DB62174EA880004FA694 /* JCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8623DB61174EA880004FA694 /* JCViewController.m */; };
+		8623DB6D174EA932004FA694 /* JCTransferManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8623DB6C174EA932004FA694 /* JCTransferManager.m */; };
+		8623DB71174EA9E6004FA694 /* AWSRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8623DB6F174EA9E6004FA694 /* AWSRuntime.framework */; };
+		8623DB72174EA9E6004FA694 /* AWSS3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8623DB70174EA9E6004FA694 /* AWSS3.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +40,10 @@
 		8623DB5E174EA880004FA694 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		8623DB60174EA880004FA694 /* JCViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JCViewController.h; sourceTree = "<group>"; };
 		8623DB61174EA880004FA694 /* JCViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JCViewController.m; sourceTree = "<group>"; };
+		8623DB6B174EA932004FA694 /* JCTransferManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCTransferManager.h; sourceTree = "<group>"; };
+		8623DB6C174EA932004FA694 /* JCTransferManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCTransferManager.m; sourceTree = "<group>"; };
+		8623DB6F174EA9E6004FA694 /* AWSRuntime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSRuntime.framework; sourceTree = "<group>"; };
+		8623DB70174EA9E6004FA694 /* AWSS3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSS3.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +54,8 @@
 				8623DB46174EA87F004FA694 /* UIKit.framework in Frameworks */,
 				8623DB48174EA87F004FA694 /* Foundation.framework in Frameworks */,
 				8623DB4A174EA87F004FA694 /* CoreGraphics.framework in Frameworks */,
+				8623DB71174EA9E6004FA694 /* AWSRuntime.framework in Frameworks */,
+				8623DB72174EA9E6004FA694 /* AWSS3.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -73,6 +82,8 @@
 		8623DB44174EA87F004FA694 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8623DB6F174EA9E6004FA694 /* AWSRuntime.framework */,
+				8623DB70174EA9E6004FA694 /* AWSS3.framework */,
 				8623DB45174EA87F004FA694 /* UIKit.framework */,
 				8623DB47174EA87F004FA694 /* Foundation.framework */,
 				8623DB49174EA87F004FA694 /* CoreGraphics.framework */,
@@ -83,6 +94,7 @@
 		8623DB4B174EA87F004FA694 /* JCTransferManager */ = {
 			isa = PBXGroup;
 			children = (
+				8623DB6E174EA937004FA694 /* JCTransferManager */,
 				8623DB54174EA87F004FA694 /* JCAppDelegate.h */,
 				8623DB55174EA87F004FA694 /* JCAppDelegate.m */,
 				8623DB5D174EA880004FA694 /* MainStoryboard.storyboard */,
@@ -105,6 +117,15 @@
 				8623DB5B174EA880004FA694 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		8623DB6E174EA937004FA694 /* JCTransferManager */ = {
+			isa = PBXGroup;
+			children = (
+				8623DB6B174EA932004FA694 /* JCTransferManager.h */,
+				8623DB6C174EA932004FA694 /* JCTransferManager.m */,
+			);
+			name = JCTransferManager;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -177,6 +198,7 @@
 				8623DB52174EA87F004FA694 /* main.m in Sources */,
 				8623DB56174EA87F004FA694 /* JCAppDelegate.m in Sources */,
 				8623DB62174EA880004FA694 /* JCViewController.m in Sources */,
+				8623DB6D174EA932004FA694 /* JCTransferManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -261,6 +283,10 @@
 		8623DB66174EA880004FA694 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "JCTransferManager/JCTransferManager-Prefix.pch";
 				INFOPLIST_FILE = "JCTransferManager/JCTransferManager-Info.plist";
@@ -272,6 +298,10 @@
 		8623DB67174EA880004FA694 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "JCTransferManager/JCTransferManager-Prefix.pch";
 				INFOPLIST_FILE = "JCTransferManager/JCTransferManager-Info.plist";
