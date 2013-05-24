@@ -108,14 +108,14 @@
     
     if (filesToUpload == 0){
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (completionBlock) completionBlock(YES);
+            if (completionBlock) completionBlock(YES, ^{ [self endBackgroundProcess]; });
         });
     }
 }
 
 -(void)request:(AmazonServiceRequest *)request didFailWithError:(NSError *)error
 {
-    if (completionBlock) completionBlock(NO);
+    if (completionBlock) completionBlock(NO, nil);
     [self endBackgroundProcess];
 }
 

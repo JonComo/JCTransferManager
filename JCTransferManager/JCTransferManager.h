@@ -10,8 +10,9 @@
 
 @class AmazonS3Client;
 
+typedef void (^EndBackgroundBlock)(void);
 typedef void (^ProgressBlock)(float percentage,int bytesUploaded, int bytesTotal);
-typedef void (^CompletionBlock)(BOOL success);
+typedef void (^CompletionBlock)(BOOL success, EndBackgroundBlock endBlock);
 
 @interface JCTransferManager : NSObject
 
