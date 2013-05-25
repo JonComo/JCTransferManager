@@ -98,7 +98,7 @@
 -(void)request:(AmazonServiceRequest *)request didSendData:(NSInteger)bytesWritten totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (progressBlock) progressBlock(((float)totalBytesWritten / (float)totalBytesExpectedToWrite) / (filesToUpload), totalBytesWritten, totalBytesExpectedToWrite);
+        if (progressBlock) progressBlock(((float)totalBytesWritten / (float)totalBytesExpectedToWrite) * 100.0f / (filesToUpload), totalBytesWritten, totalBytesExpectedToWrite);
     });
 }
 
