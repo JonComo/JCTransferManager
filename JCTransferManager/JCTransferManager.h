@@ -22,6 +22,7 @@ typedef void (^CompletionBlock)(BOOL success, EndBackgroundBlock endBlock);
 
 -(void)authorizeWithKey:(NSString *)key secretKey:(NSString *)secretKey bucket:(NSString *)bucket;
 -(void)uploadData:(NSArray *)dataArray filenames:(NSArray *)filenames progress:(ProgressBlock)progress completion:(CompletionBlock)completion;
+-(void)cancelUpload;
 -(void)endBackgroundProcess;
 
 @end

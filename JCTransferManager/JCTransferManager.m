@@ -62,6 +62,16 @@
     }];
 }
 
+-(void)cancelUpload
+{
+    filesToUpload = 0;
+    
+    progressBlock = nil;
+    completionBlock = nil;
+    
+    transferManager = nil;
+}
+
 -(void)runInBackgroundIfPossible:(void(^)(void))block
 {
     if ([[UIDevice currentDevice] isMultitaskingSupported]) {
