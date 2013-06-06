@@ -7,6 +7,7 @@
 //
 
 #import "JCTransferManager.h"
+#import "JCTransferObject.h"
 #import <AWSS3/AWSS3.h>
 #import <AWSS3/S3TransferManager.h>
 #import <AWSRuntime/AWSRuntime.h>
@@ -20,8 +21,6 @@
     CompletionBlock completionBlock;
     
     __block UIBackgroundTaskIdentifier background_task;
-    
-    int filesToUpload;
 }
 
 @end
@@ -40,6 +39,16 @@
     return sharedManager;
 }
 
+-(id)init
+{
+    if (self = [super init]) {
+        //init
+        _files = [NSMutableArray array];
+    }
+    
+    return self;
+}
+
 -(void)authorizeWithKey:(NSString *)key secretKey:(NSString *)secretKey bucket:(NSString *)bucket
 {
     self.client = [[AmazonS3Client alloc] initWithAccessKey:key withSecretKey:secretKey];
@@ -53,23 +62,27 @@
 {
     progressBlock = progress;
     completionBlock = completion;
-    filesToUpload = dataArray.count;
+    
+    NSMutableArray *putObjectRequests = [NSMutableArray array];
+    
+    for (u_int i = 0; i<dataArray.count; i++)
+    {
+        NSString *filename = filenames[i];
+        NSData *data = dataArray[i];
+        
+        S3PutObjectRequest *putObject = [[S3PutObjectRequest alloc] initWithKey:filename inBucket:bucketName];
+        
+        [putObject setData:data];
+        putObject.requestTag = filename;
+        
+        [self.files addObject:[[JCTransferObject alloc] initWithFilename:filename data:data]];
+        [putObjectRequests addObject:putObject];
+    }
     
     [self runInBackgroundIfPossible:^{
-        for (u_int i = 0; i<dataArray.count; i++){
-            [transferManager uploadData:dataArray[i] bucket:bucketName key:filenames[i]];
-        }
+        for (S3PutObjectRequest *request in putObjectRequests)
+            [transferManager upload:request];
     }];
-}
-
--(void)cancelUpload
-{
-    filesToUpload = 0;
-    
-    progressBlock = nil;
-    completionBlock = nil;
-    
-    transferManager = nil;
 }
 
 -(void)runInBackgroundIfPossible:(void(^)(void))block
@@ -77,7 +90,7 @@
     if ([[UIDevice currentDevice] isMultitaskingSupported]) {
         
         background_task = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler: ^ {
-            [[UIApplication sharedApplication] endBackgroundTask: background_task];
+            [[UIApplication sharedApplication] endBackgroundTask:background_task];
             background_task = UIBackgroundTaskInvalid;
         }];
         
@@ -108,25 +121,40 @@
 -(void)request:(AmazonServiceRequest *)request didSendData:(NSInteger)bytesWritten totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (progressBlock) progressBlock(((float)totalBytesWritten / (float)totalBytesExpectedToWrite) * 100.0f / (filesToUpload), totalBytesWritten, totalBytesExpectedToWrite);
+        if (progressBlock) progressBlock(request.requestTag, totalBytesWritten, totalBytesExpectedToWrite);
     });
 }
 
 -(void)request:(AmazonServiceRequest *)request didCompleteWithResponse:(AmazonServiceResponse *)response
 {
-    filesToUpload --;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (completionBlock) completionBlock(request.requestTag, YES, ^{ [self endBackgroundProcess]; });
+    });
     
-    if (filesToUpload == 0){
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (completionBlock) completionBlock(YES, ^{ [self endBackgroundProcess]; });
-        });
-    }
+    [self.files removeObject:[self objectWithName:request.requestTag]];
+    
+    if (self.files.count == 0)
+        [self endBackgroundProcess];
 }
 
 -(void)request:(AmazonServiceRequest *)request didFailWithError:(NSError *)error
 {
-    if (completionBlock) completionBlock(NO, nil);
-    [self endBackgroundProcess];
+    //Still keep trying to upload it.
+    //[self endBackgroundProcess];
+}
+
+-(JCTransferObject *)objectWithName:(NSString *)name
+{
+    JCTransferObject *object;
+    
+    for (JCTransferObject *transfer in self.files){
+        if ([object.name isEqualToString:name]){
+            object = transfer;
+            break;
+        }
+    }
+    
+    return object;
 }
 
 @end

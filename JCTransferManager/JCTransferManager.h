@@ -11,18 +11,20 @@
 @class AmazonS3Client;
 
 typedef void (^EndBackgroundBlock)(void);
-typedef void (^ProgressBlock)(float percentage,int bytesUploaded, int bytesTotal);
-typedef void (^CompletionBlock)(BOOL success, EndBackgroundBlock endBlock);
+typedef void (^ProgressBlock)(NSString *key, int bytesUploaded, int bytesTotal);
+typedef void (^CompletionBlock)(NSString *key, BOOL success, EndBackgroundBlock endBlock);
 
 @interface JCTransferManager : NSObject
 
 @property (nonatomic, strong) AmazonS3Client *client;
+@property (nonatomic, strong) NSMutableArray *files;
 
 +(JCTransferManager *)sharedManager;
 
 -(void)authorizeWithKey:(NSString *)key secretKey:(NSString *)secretKey bucket:(NSString *)bucket;
+
 -(void)uploadData:(NSArray *)dataArray filenames:(NSArray *)filenames progress:(ProgressBlock)progress completion:(CompletionBlock)completion;
--(void)cancelUpload;
+
 -(void)endBackgroundProcess;
 
 @end
